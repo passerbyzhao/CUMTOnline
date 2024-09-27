@@ -38,13 +38,13 @@ ISP =  ''`。
 ## 1. 单次登录
 完成准备(0)和(1)后可以直接运行 `connect.py` 文件，即可自动登录。
 
-如果想实现一键登录，可以完成准备(2)后，运行 `online.bat` 登录。
+如果想实现一键登录，可以完成准备(2)后，运行 `bat/online.bat` 登录。
 
 
 ### 准备(2)
 `待完善`
 
-修改 `online.bat` 的内容。
+修改 `bat/online.bat` 的内容。
 
 具体过程可以百度，
 或者看[这个](https://blog.csdn.net/O3OTZ/article/details/126136943)
@@ -57,7 +57,7 @@ ISP =  ''`。
 
 完成准备(0)和(1)。
 
-修改 `stay_online.bat` 和 `stay_online.vbs` 的内容，
+修改 `bat/stay_online.bat` 和 `bat/stay_online.vbs` 的内容，
 可以通过后台循环尝试登陆，以实现保持在线的功能。
 
 

@@ -1,0 +1,8 @@
+C:
+call C:\Users\PZ\anaconda3\Scripts\activate.bat C:\Users\PZ\anaconda3
+call conda activate com311
+D:
+cd D:\PythonProject\CUMTAutoOnline
+python connect.py
+
+:: 单次登录

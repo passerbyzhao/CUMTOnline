@@ -3,9 +3,9 @@ import logging
 
 import pywifi       # https://pypi.org/project/pywifi/
 
-Scan_delay = 0      # WiFi扫描延迟 s
-Connect_delay = 0   # WiFi连接延迟 s
-Connect_timeout = 3 # WiFi连接超时 s
+Scan_delay = 0.5      # WiFi扫描延迟 s
+Connect_delay = 0.5   # WiFi连接延迟 s
+Connect_timeout = 7 # WiFi连接超时 s
 
 DISCONNECTED = pywifi.const.IFACE_DISCONNECTED
 SCANNING = pywifi.const.IFACE_SCANNING
@@ -40,19 +40,17 @@ class WiFiConnect:
             tmp_profile = self.iface.add_network_profile(profile)
             self.iface.connect(tmp_profile)
             sleep(self.Connect_delay)
-            if self.status_check():
-                return True
-            else:
-                profile.auth = pywifi.const.AUTH_ALG_SHARED
-                tmp_profile = self.iface.add_network_profile(profile)
-                self.iface.connect(tmp_profile)
-                sleep(self.Connect_delay)
-                s = time()
-                while not self.status_check():
-                    if time()-s > Connect_timeout:
-                        raise WiFiError('连接超时')
-                return True
-        raise WiFiError('疑似找不到CUMT_Stu')
+
+            s = time()
+            while time() - s < Connect_timeout:
+                if self.iface.status() == CONNECTING:
+                    while self.iface.status() == CONNECTING:
+                        pass
+                if self.iface.status() == CONNECTED:
+                    return True
+                else:
+                    self.iface.connect(tmp_profile)
+            raise WiFiError('连接超时')
 
     def scan(self):     # 检查WiFi中是否有CUMT_Stu
         self.iface.scan()
@@ -62,20 +60,11 @@ class WiFiConnect:
         s = time()
         while True:
             if time() - s > Connect_timeout:
-                return False
+                raise WiFiError('疑似找不到CUMT_Stu')
             for i in result:
+                # print(i.ssid)
                 if i.ssid == "CUMT_Stu":
                     return True
-
-
-    def status_check(self):     # 检查连接状态
-        status = self.iface.status()
-        if status == CONNECTED:
-            return True
-        elif status == DISCONNECTED:
-            return False
-        else:
-            return False
 
 
 if __name__ == '__main__':

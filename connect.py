@@ -1,12 +1,15 @@
 import logging
+from time import time
 
-from wifi_connect import WiFiConnect, WiFiError
-from requests_login import RequestsLogin, online_status, WebpageError, NetworkError, UnknownError
+from Utils.wifi_connect import WiFiConnect, WiFiError
+from Utils.requests_login import RequestsLogin, online_status, WebpageError, NetworkError, UnknownError
 
 
 username = ''
 password = ''
 ISP =  ''     # 移动：’cmcc‘   联通：‘unicom’   电信：‘telecom’    校园网：‘’
+
+Connect_timeout = 10
 
 
 def set_loglevel():
@@ -45,8 +48,15 @@ class Connect:
     def connect(self):
         print('Connect WiFi')
         wifi = WiFiConnect()
-        if not wifi.connect():
-            raise NetworkError('Failed to connect to WiFi')
+        s = time()
+        while time() - s < Connect_timeout:
+            try:
+                if wifi.connect():
+                    break
+            except WiFiError as e:
+                self._logger.warning(e.args[0])
+        else:
+            raise WiFiError('Failed to connect to WiFi')
         print('Connected')
         print('Login')
         try:

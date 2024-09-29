@@ -1,6 +1,7 @@
-import logging
 from time import sleep
 
+from Utils.requests_login import UnknownError
+from Utils.wifi_connect import WiFiError
 from connect import Connect, logger
 
 
@@ -11,8 +12,12 @@ def cycle():
     while True:
         try:
             Connect()
-        except Exception as e:
-            logger.warning(e.args[0])
+        except WiFiError as e:
+            logger.error(e.args[0])
+        except UnknownError as e:
+            logger.error(e.args[0])
+        # except Exception as e:
+        #     logger.error('未知错误 连接失败')
         sleep(gap*60)
 
 
